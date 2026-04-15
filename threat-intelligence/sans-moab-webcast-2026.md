@@ -1,3 +1,104 @@
+# SANS Webcast — Better Password Attacks with AI
+**Speaker:** Joshua Wright  
+**Organizer:** SANS Institute  
+**Date:** April 15, 2026  
+**My Status:** Attended live — certificate of completion received
+
+---
+
+## What This Session Was About
+
+Joshua Wright analyzed the MOAB (Mother Of All Breaches) — a dataset 
+containing 3.46 billion leaked credentials from hundreds of breaches 
+combined into one file. Using ClickHouse (a high-performance columnar 
+database), he queried this data at scale to extract behavioral patterns 
+about how real humans choose and reuse passwords — then showed how AI 
+(Claude via MCP) can accelerate this kind of threat intelligence work.
+
+---
+
+## Key Concepts Learned
+
+### 1. What is MOAB?
+- Mother Of All Breaches — 108GB of compiled credential data
+- Aggregates hundreds of previous breaches into one queryable dataset
+- Contains usernames, emails, passwords from real leaked databases
+- Used here for **defensive threat intelligence research**, not attacks
+
+### 2. Password Reuse — The Real Numbers
+From querying the MOAB dataset:
+- 23.2 million unique usernames analyzed in the sample
+- **870,000 accounts (3.75%)** had the same password leaked from 4+ 
+  different websites
+- **180,000 accounts (0.8%)** had it leaked from 8+ different sites
+
+This means credential stuffing attacks are highly effective because 
+users reuse passwords across many platforms. One breach = access 
+to potentially dozens of other accounts.
+
+### 3. What the Data Reveals About Human Password Behavior
+
+| Pattern | What It Means |
+|---------|--------------|
+| Most common passwords | "123456", "password" still dominate |
+| Password length distribution | Most users choose shortest allowed |
+| Keyboard-walk patterns | "qwerty", "12345" remain widespread |
+| l33t substitution | "p@ssw0rd" is NOT more secure — attackers know this |
+| Year/date patterns | "Summer2024!" is predictable and crackable |
+| Username in password | Many users include their own email/name |
+| Mutation families | "password1" → "password2" is detectable by AI |
+
+### 4. Key Insight — 90-Day Password Rotation Is Harmful
+NIST 800-63B now officially recommends **against** forced periodic 
+password changes. The MOAB data confirms why: users respond to forced 
+rotation with predictable mutations. Security policy should focus on 
+**breach detection and length requirements**, not rotation schedules.
+
+### 5. Fortune 20 Companies Are Not Protected
+Leaked corporate credentials found in MOAB:
+
+| Company | Leaked Credentials |
+|---------|-------------------|
+| Alphabet (Google) | 392,354 |
+| Microsoft | 122,400 |
+| Bank of America | 67,752 |
+| JPMorgan Chase | 46,339 |
+| Apple | 32,219 |
+
+Conclusion: company size does not equal password hygiene. 
+Employees of major corporations use the same weak passwords as everyone else.
+
+### 6. MFA Is Valuable But Not Bulletproof
+- **Prompt bombing:** Attacker sends repeated MFA push notifications 
+  hoping user approves accidentally
+- **MFA bypass vulnerabilities:** Some authentication endpoints have 
+  logic flaws that skip MFA entirely
+- **Best practice:** FIDO2/passkeys (phishing-resistant) or number-matching 
+  push verification
+
+### 7. ClickHouse — Tool Used for Analysis
+- Open source, free columnar database
+- Designed for analytical queries on billions of rows
+- Can be run locally via Docker:
+```bash
+docker run -d --name clickhouse \
+  -p 8123:8123 -p 9000:9000 \
+  clickhouse/clickhouse-server
+```
+- Allows querying billions of credentials in milliseconds
+
+### 8. MCP — Model Context Protocol (New to Me)
+This was something I had not encountered before this session.
+
+MCP = a standard protocol that allows AI models (like Claude) to 
+connect directly to external tools and data sources.
+
+**Architecture shown:**
+Language Model (Claude)
+↓
+MCP Client (bridge)
+↓
+MCP Servers (tools: GitHub, Slack, databases, etc.)
 Joshua used Claude connected via MCP to his ClickHouse database — 
 and asked it to write SQL queries in natural language. Claude generated 
 accurate queries against the breach data in real time.
