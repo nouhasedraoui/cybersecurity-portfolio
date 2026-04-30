@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network & Security Protocol Reference</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg: #070b0f;
+    --bg2: #0d1117;
+    --bg3: #111820;
+    --border: #1e2d3d;
+    --border2: #243447;
+    --accent: #00d4ff;
+    --accent2: #0a84ff;
+    --accent3: #00ff88;
+    --red: #ff4757;
+    --orange: #ff9f43;
+    --yellow: #ffd32a;
+    --purple: #a55eea;
+    --text: #c9d8e8;
+    --text2: #7a8fa6;
+    --text3: #4a5f70;
+    --glow: 0 0 20px rgba(0,212,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* HEADER */
+  header {
+    padding: 48px 0 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .title-block {}
+
+  .title-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .title-tag::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -1px;
+    color: #fff;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  .stats {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: right;
+  }
+
+  .stat-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  /* SEARCH & FILTERS */
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .search-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 240px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  #searchInput {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 12px 14px 12px 40px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  #searchInput:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.08);
+  }
+
+  #searchInput::placeholder { color: var(--text3); }
+
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    padding: 8px 14px;
+    color: var(--text2);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active {
+    background: rgba(0,212,255,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .risk-filter {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .risk-btn {
+    padding: 7px 12px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+
+  .risk-btn.critical { background: rgba(255,71,87,0.1); border-color: rgba(255,71,87,0.3); color: var(--red); }
+  .risk-btn.critical.active { background: rgba(255,71,87,0.25); border-color: var(--red); }
+  .risk-btn.high { background: rgba(255,159,67,0.1); border-color: rgba(255,159,67,0.3); color: var(--orange); }
+  .risk-btn.high.active { background: rgba(255,159,67,0.25); border-color: var(--orange); }
+  .risk-btn.medium { background: rgba(255,211,42,0.1); border-color: rgba(255,211,42,0.3); color: var(--yellow); }
+  .risk-btn.medium.active { background: rgba(255,211,42,0.25); border-color: var(--yellow); }
+  .risk-btn.low { background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.3); color: var(--accent3); }
+  .risk-btn.low.active { background: rgba(0,255,136,0.25); border-color: var(--accent3); }
+
+  /* RESULTS COUNT */
+  .results-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .results-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  .results-count span { color: var(--accent); }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 40px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .section-icon {
+    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .section-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    margin-left: auto;
+  }
+
+  /* TABLE */
+  .table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead tr {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  th {
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text3);
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-weight: 400;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(30,45,61,0.6);
+    transition: background 0.1s;
+    cursor: pointer;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+
+  tbody tr:hover { background: rgba(0,212,255,0.03); }
+
+  tbody tr.expanded { background: rgba(0,212,255,0.05); }
+
+  td {
+    padding: 11px 14px;
+    vertical-align: middle;
+    line-height: 1.4;
+  }
+
+  /* Protocol name cell */
+  .proto-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  /* Port badge */
+  .port-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    padding: 2px 8px;
+    color: var(--accent2);
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  /* Type badge */
+  .type-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    border-radius: 2px;
+    padding: 2px 7px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .type-tcp { background: rgba(10,132,255,0.15); border: 1px solid rgba(10,132,255,0.3); color: #4da3ff; }
+  .type-udp { background: rgba(165,94,234,0.15); border: 1px solid rgba(165,94,234,0.3); color: #c084fc; }
+  .type-both { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: var(--accent); }
+  .type-l2 { background: rgba(255,159,67,0.1); border: 1px solid rgba(255,159,67,0.3); color: var(--orange); }
+  .type-other { background: rgba(74,95,112,0.2); border: 1px solid var(--border2); color: var(--text2); }
+
+  /* Risk badge */
+  .risk {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    border-radius: 2px;
+    padding: 3px 8px;
+    letter-spacing: 1px;
+    display: inline-block;
+    white-space: nowrap;
+    font-weight: 700;
+  }
+
+  .risk-CRITICAL { background: rgba(255,71,87,0.15); border: 1px solid rgba(255,71,87,0.4); color: var(--red); }
+  .risk-HIGH { background: rgba(255,159,67,0.15); border: 1px solid rgba(255,159,67,0.4); color: var(--orange); }
+  .risk-MEDIUM { background: rgba(255,211,42,0.12); border: 1px solid rgba(255,211,42,0.35); color: var(--yellow); }
+  .risk-LOW { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); color: var(--accent3); }
+
+  /* Description */
+  .desc-text {
+    color: var(--text2);
+    font-size: 13px;
+    max-width: 260px;
+  }
+
+  /* Tools */
+  .tools-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .tool-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    background: rgba(0,255,136,0.06);
+    border: 1px solid rgba(0,255,136,0.2);
+    border-radius: 2px;
+    padding: 2px 7px;
+    color: var(--accent3);
+    white-space: nowrap;
+  }
+
+  /* Expand arrow */
+  .expand-arrow {
+    color: var(--text3);
+    font-size: 10px;
+    transition: transform 0.2s;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  tbody tr.expanded .expand-arrow { transform: rotate(90deg); color: var(--accent); }
+
+  /* EXPANDED ROW */
+  .detail-row { display: none; }
+  .detail-row.visible { display: table-row; }
+
+  .detail-cell {
+    padding: 0 !important;
+    background: rgba(0,212,255,0.02) !important;
+    border-top: 1px solid rgba(0,212,255,0.1) !important;
+  }
+
+  .detail-inner {
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    border-left: 2px solid var(--accent);
+    margin: 0 14px 14px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .detail-block h4 {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .detail-block p, .detail-block li {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 4px;
+  }
+
+  .detail-block ul { padding-left: 16px; }
+
+  .detail-block li { margin-bottom: 4px; }
+
+  .detail-block .vuln-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .vuln-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  .cmd-block {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent3);
+    margin-top: 6px;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+
+  /* TTL TABLE */
+  .ttl-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+  }
+
+  .ttl-section h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 14px;
+  }
+
+  .ttl-grid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .ttl-card {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 12px 20px;
+    text-align: center;
+    min-width: 140px;
+  }
+
+  .ttl-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+  }
+
+  .ttl-os {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  /* No results */
+  .no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text3);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    display: none;
+  }
+
+  .no-results.visible { display: block; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  mark {
+    background: rgba(0,212,255,0.25);
+    color: #fff;
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+
+  @media (max-width: 768px) {
+    .stats { display: none; }
+    th:nth-child(n+5), td:nth-child(n+5) { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="header-top">
+      <div class="title-block">
+        <div class="title-tag">Cybersecurity Reference v2.0</div>
+        <h1>Protocol <span>Intelligence</span><br>Reference</h1>
+        <div class="subtitle">// network protocols · ports · vulnerabilities · pentest tools</div>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-num" id="totalCount">0</span>
+          <span class="stat-label">Protocols</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" style="color:var(--red)">0</span>
+          <span class="stat-label">Critical Risk</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" style="color:var(--accent3)">9</span>
+          <span class="stat-label">Categories</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Controls -->
+  <div class="controls">
+    <div class="search-wrapper">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="searchInput" placeholder="Search protocol, port, tool, vulnerability...">
+    </div>
+    <div class="filter-row">
+      <button class="filter-btn active" data-cat="all">All</button>
+      <button class="filter-btn" data-cat="connectivity">Connectivity</button>
+      <button class="filter-btn" data-cat="remote">Remote Access</button>
+      <button class="filter-btn" data-cat="file">File & Directory</button>
+      <button class="filter-btn" data-cat="web">Web</button>
+      <button class="filter-btn" data-cat="email">Email</button>
+      <button class="filter-btn" data-cat="database">Database</button>
+      <button class="filter-btn" data-cat="security">VPN & Security</button>
+      <button class="filter-btn" data-cat="wireless">Wireless & Industrial</button>
+      <button class="filter-btn" data-cat="monitoring">Monitoring</button>
+    </div>
+  </div>
+
+  <div class="controls" style="margin-top:-12px;">
+    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);padding:4px 0;">RISK LEVEL:</div>
+    <div class="risk-filter">
+      <button class="risk-btn critical active" data-risk="CRITICAL">● CRITICAL</button>
+      <button class="risk-btn high active" data-risk="HIGH">● HIGH</button>
+      <button class="risk-btn medium active" data-risk="MEDIUM">● MEDIUM</button>
+      <button class="risk-btn low active" data-risk="LOW">● LOW</button>
+    </div>
+  </div>
+
+  <div class="results-bar">
+    <div class="results-count">Showing <span id="visibleCount">0</span> of <span id="totalCountBar">0</span> protocols</div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);">↓ Click any row to expand details</div>
+  </div>
+
+  <div id="noResults" class="no-results">
+    <div style="font-size:28px;margin-bottom:12px;">◌</div>
+    No protocols match your search.
+  </div>
+
+  <div id="tableContainer"></div>
+
+  <!-- TTL Reference -->
+  <div class="ttl-section">
+    <h3>🔬 OS Detection via TTL (Ping/Traceroute)</h3>
+    <div class="ttl-grid">
+      <div class="ttl-card"><span class="ttl-val">64</span><div class="ttl-os">Linux / macOS / FreeBSD</div></div>
+      <div class="ttl-card"><span class="ttl-val">128</span><div class="ttl-os">Windows (XP/Vista/7/10/11)</div></div>
+      <div class="ttl-card"><span class="ttl-val">255</span><div class="ttl-os">Cisco Routers / Solaris</div></div>
+      <div class="ttl-card"><span class="ttl-val">254</span><div class="ttl-os">Cisco IOS / Network Devices</div></div>
+      <div class="ttl-card"><span class="ttl-val">60</span><div class="ttl-os">OpenBSD / HP-UX</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const protocols = [
+  // ── CONNECTIVITY ──
+  {
+    cat:"connectivity", name:"ICMP", port:"—", type:"OTHER",
+    desc:"Network troubleshooting — Ping and Traceroute",
+    risk:"MEDIUM",
+    function:"Reports errors and provides diagnostic info. Ping uses ICMP Echo Request/Reply. Traceroute uses TTL expiration to map hops.",
+    vulns:["ICMP Tunneling: hide data inside ICMP packets to bypass firewalls","Ping Flood (DoS): overwhelm target with ICMP requests","Smurf Attack: amplify traffic by spoofing victim IP in broadcast ICMP","OS fingerprinting via TTL value analysis"],
+    tools:["nmap -sn (ping scan)","hping3 (custom ICMP)","Wireshark (capture)","icmptunnel (tunneling)","ping / traceroute"],
+    commands:"nmap -sn 192.168.1.0/24\nhping3 --icmp -c 1000 <target>\nping -c 4 <target>"
+  },
+  {
+    cat:"connectivity", name:"DHCP", port:"67, 68", type:"UDP",
+    desc:"Dynamic IP assignment to devices on the network",
+    risk:"HIGH",
+    function:"Server listens on 67, client broadcasts on 68. Process: Discover → Offer → Request → Acknowledge (DORA). Assigns IP, gateway, DNS, and lease time.",
+    vulns:["DHCP Starvation: exhaust all IPs using fake MAC addresses (Gobbler tool)","Rogue DHCP Server: attacker provides malicious gateway/DNS → MITM","No authentication — any device can request or respond"],
+    tools:["Yersinia (DHCP starvation)","Metasploit auxiliary/server/dhcp","Wireshark (capture DORA process)","dhcpig"],
+    commands:"yersinia -G  (GUI mode)\nyersinia dhcp -attack 1\nwireshark -i eth0 -f 'udp port 67'"
+  },
+  {
+    cat:"connectivity", name:"DNS", port:"53", type:"BOTH",
+    desc:"Resolves domain names to IP addresses",
+    risk:"HIGH",
+    function:"Hierarchical distributed naming system. UDP for queries under 512 bytes, TCP for zone transfers and large responses. Records: A, AAAA, MX, TXT, CNAME, PTR, NS, SOA.",
+    vulns:["Zone Transfer (AXFR): dump entire DNS database if misconfigured","DNS Spoofing/Cache Poisoning: inject false records","DNS Tunneling: exfiltrate data encoded in DNS queries","Subdomain enumeration: map attack surface","DNS Amplification DDoS: send small query, get large response"],
+    tools:["dig (zone transfer)","dnsenum","dnsrecon","fierce","nslookup","dnschef (spoofing)","iodine (tunneling)"],
+    commands:"dig axfr @<ns-server> <domain>\ndnsenum --enum <domain>\ndnsrecon -d <domain> -t axfr\nfierce --domain <domain>"
+  },
+  {
+    cat:"connectivity", name:"NAT", port:"—", type:"OTHER",
+    desc:"Translates private IPs to public IP addresses",
+    risk:"LOW",
+    function:"Allows multiple private hosts to share one public IP. Types: Static NAT (1:1), Dynamic NAT (pool), PAT/Masquerade (many:1 using ports). Hides internal topology.",
+    vulns:["NAT bypass via SSRF: server fetches internal resources on your behalf","Application-layer confusion: some protocols embed IPs in payload (FTP, SIP)"],
+    tools:["nmap (SSRF testing)","Burp Suite (SSRF payloads)"],
+    commands:"# SSRF test\ncurl 'http://target.com/fetch?url=http://192.168.1.1'"
+  },
+  {
+    cat:"connectivity", name:"IGMP", port:"—", type:"OTHER",
+    desc:"Manages multicast group memberships",
+    risk:"LOW",
+    function:"Hosts use IGMP to tell routers which multicast groups they want to receive. Used for streaming, IPTV. Versions: IGMPv1, v2, v3.",
+    vulns:["Multicast DoS: flood with IGMP reports to exhaust router state","IGMP spoofing to join or leave groups without authorization"],
+    tools:["Wireshark (capture multicast)","scapy (craft IGMP packets)"],
+    commands:"wireshark -f 'igmp'"
+  },
+  {
+    cat:"connectivity", name:"ARP", port:"—", type:"L2",
+    desc:"Maps IP addresses to MAC addresses on local network",
+    risk:"CRITICAL",
+    function:"Broadcast 'Who has IP X?' → owner replies with MAC. Result cached in ARP table. No authentication — any host can reply.",
+    vulns:["ARP Spoofing/Poisoning: send fake ARP replies → become the gateway → MITM all traffic","Used as basis for many attacks: MITM, session hijack, DoS"],
+    tools:["arpspoof (dsniff)","ettercap","bettercap","arp -a (view table)","Wireshark"],
+    commands:"arpspoof -i eth0 -t <victim> <gateway>\nbettercap -iface eth0\n# then: net.probe on; arp.spoof on"
+  },
+  {
+    cat:"connectivity", name:"BOOTP", port:"67, 68", type:"UDP",
+    desc:"Legacy precursor to DHCP — static IP assignment via config file",
+    risk:"MEDIUM",
+    function:"Bootstrap Protocol — used to boot diskless workstations. No authentication. Largely replaced by DHCP.",
+    vulns:["No authentication — easily spoofed","Can be used to redirect boot configuration to attacker-controlled server"],
+    tools:["Wireshark","scapy"],
+    commands:"wireshark -f 'udp port 67 or udp port 68'"
+  },
+
+  // ── REMOTE ACCESS ──
+  {
+    cat:"remote", name:"SSH", port:"22", type:"TCP",
+    desc:"Secure encrypted remote login and command execution",
+    risk:"MEDIUM",
+    function:"Replaces Telnet. Uses asymmetric cryptography for key exchange then symmetric for session. Supports password auth and public key auth. Also provides SCP, SFTP, port forwarding, and tunneling.",
+    vulns:["Brute force on weak passwords (especially default credentials)","Outdated versions with known CVEs (e.g. OpenSSH < 8.x vulnerabilities)","Weak key algorithms (DSA, RSA-1024)","SSH key theft from ~/.ssh/id_rsa","Misconfigured PermitRootLogin or PasswordAuthentication"],
+    tools:["hydra (brute force)","nmap --script ssh-auth-methods","nmap --script ssh2-enum-algos","ssh-audit","medusa","Metasploit ssh_login module"],
+    commands:"hydra -l root -P wordlist.txt ssh://<target>\nssh-audit <target>\nnmap -p 22 --script ssh-hostkey <target>"
+  },
+  {
+    cat:"remote", name:"Telnet", port:"23", type:"TCP",
+    desc:"Insecure plaintext remote login — legacy protocol",
+    risk:"CRITICAL",
+    function:"Terminal emulation over network. All data including credentials transmitted in plaintext. Still found on old routers, IoT devices, and industrial equipment.",
+    vulns:["Credentials and all data visible in plaintext — capture with Wireshark","No encryption — complete session hijacking possible","Often used with default credentials on embedded devices"],
+    tools:["Wireshark (sniff credentials)","hydra (brute force)","nmap -p 23 --script telnet-brute","Metasploit"],
+    commands:"wireshark -f 'tcp port 23'\nhydra -l admin -P pass.txt telnet://<target>\nnmap -p 23 --script telnet-encryption <target>"
+  },
+  {
+    cat:"remote", name:"RDP", port:"3389", type:"TCP",
+    desc:"Microsoft Remote Desktop Protocol — graphical remote access",
+    risk:"CRITICAL",
+    function:"Provides full graphical desktop access to Windows systems. Uses RC4 encryption (legacy) or TLS. Supports NLA (Network Level Authentication) for pre-auth credential check.",
+    vulns:["BlueKeep (CVE-2019-0708): unauthenticated RCE on Windows 7/Server 2008 — wormable","DejaBlue: similar to BlueKeep on newer Windows","Brute force on exposed RDP ports","Pass-the-Hash against NLA","Credential theft via MiTM if NLA disabled","MFA bypass attacks"],
+    tools:["Metasploit bluekeep scanner","rdp-scan","crowbar (brute force)","rdesktop","xfreerdp","nmap --script rdp-enum-encryption"],
+    commands:"nmap -p 3389 --script rdp-enum-encryption <target>\nuse auxiliary/scanner/rdp/ms12_020_check\ncrowbar -b rdp -s <target>/32 -u admin -C pass.txt"
+  },
+  {
+    cat:"remote", name:"VNC", port:"5900", type:"TCP",
+    desc:"Virtual Network Computing — graphical desktop sharing",
+    risk:"HIGH",
+    function:"Platform-independent screen sharing. Uses RFB protocol. No encryption by default — often tunneled over SSH in secure setups. Port varies: 5900 (display 0), 5901 (display 1), etc.",
+    vulns:["Often has no or weak password protection","Credentials and screen transmitted in plaintext (without SSH tunnel)","Public VNC servers easily found on Shodan"],
+    tools:["hydra -P pass.txt vnc://<target>","vncviewer","nmap --script vnc-info","Metasploit vnc_login","Shodan: port:5900"],
+    commands:"nmap -p 5900-5910 --script vnc-info <target>\nhydra -P rockyou.txt vnc://<target>"
+  },
+  {
+    cat:"remote", name:"WinRM", port:"5985, 5986", type:"TCP",
+    desc:"Windows Remote Management — PowerShell remoting",
+    risk:"HIGH",
+    function:"Microsoft implementation of WS-Management protocol. Allows remote PowerShell execution. Port 5985 = HTTP, 5986 = HTTPS. Used heavily in post-exploitation.",
+    vulns:["Pass-the-Hash attacks","Credential reuse across machines","Lateral movement once one host is compromised"],
+    tools:["evil-winrm","crackmapexec winrm","Metasploit winrm_cmd","nmap --script winrm"],
+    commands:"evil-winrm -i <target> -u administrator -p password\ncrackmapexec winrm <target> -u admin -p pass"
+  },
+  {
+    cat:"remote", name:"X11", port:"6000-6063", type:"TCP",
+    desc:"Unix/Linux graphics display protocol",
+    risk:"HIGH",
+    function:"Allows graphical applications to display on remote screens. Client-server model where the display (X server) runs on the user's machine.",
+    vulns:["Keystroke and screen sniffing if DISPLAY is exported without authentication","xhost + disables all access control — extremely dangerous"],
+    tools:["Wireshark","xspy (keystroke capture)","nmap"],
+    commands:"nmap -p 6000-6063 <target>\nxdpyinfo -display <target>:0"
+  },
+
+  // ── FILE & DIRECTORY ──
+  {
+    cat:"file", name:"SMB", port:"445", type:"TCP",
+    desc:"Windows file sharing, printer sharing, and inter-process communication",
+    risk:"CRITICAL",
+    function:"Server Message Block — core Windows networking protocol. Allows file/printer sharing and named pipe IPC. SMBv1 is deprecated but still found. SMBv3 added encryption.",
+    vulns:["EternalBlue (MS17-010): NSA exploit, used by WannaCry ransomware — unauthenticated RCE","NTLM Relay: capture and relay authentication to other services","Pass-the-Hash: use NTLM hash without cracking to authenticate","SMB Signing disabled: allows relay attacks","Null sessions: anonymous access to share list","PrintNightmare (CVE-2021-1675): privilege escalation via print spooler"],
+    tools:["Metasploit ms17_010_eternalblue","nmap --script smb-vuln*","smbclient","crackmapexec smb","impacket (ntlmrelayx, smbclient)","enum4linux","responder"],
+    commands:"nmap -p 445 --script smb-vuln-ms17-010 <target>\nenum4linux -a <target>\nsmbclient -L //<target>/ -N\ncrackmapexec smb <target> -u admin -p pass"
+  },
+  {
+    cat:"file", name:"FTP", port:"20, 21", type:"TCP",
+    desc:"File Transfer Protocol — upload and download files",
+    risk:"HIGH",
+    function:"Port 21 = control connection (commands). Port 20 = data connection. Two modes: Active (server connects back to client) and Passive (client connects to server for data). No encryption.",
+    vulns:["Anonymous login allowed on many servers — read/write without credentials","Plaintext credentials — sniffable by Wireshark","FTP Bounce attack: use FTP server as proxy for port scanning","VSFTPD 2.3.4 backdoor (classic CVE)"],
+    tools:["nmap --script ftp-anon","hydra -l user -P pass.txt ftp://<target>","Metasploit vsftpd_234_backdoor","Wireshark","ftp client"],
+    commands:"nmap -p 21 --script ftp-anon,ftp-syst <target>\nhydra -l anonymous -p anonymous ftp://<target>\nftp <target>"
+  },
+  {
+    cat:"file", name:"TFTP", port:"69", type:"UDP",
+    desc:"Trivial FTP — minimal file transfer with no authentication",
+    risk:"HIGH",
+    function:"Simplified FTP with no authentication or directory listing. Used for booting network devices (PXE boot), transferring router configs and firmware. UDP-based.",
+    vulns:["No authentication — anyone can read or write files if they know the filename","Used to steal router config files containing credentials","Can be used to upload malicious firmware or config"],
+    tools:["nmap -p 69 --script tftp-enum","Metasploit tftp_server","atftp","tftp client"],
+    commands:"nmap -p 69 --script tftp-enum <target>\natftp --get --remote-file /etc/passwd <target>"
+  },
+  {
+    cat:"file", name:"NFS", port:"111, 2049", type:"TCP",
+    desc:"Network File System — Unix/Linux remote file sharing",
+    risk:"HIGH",
+    function:"Allows mounting remote filesystems as if local. Port 111 = rpcbind/portmapper (maps RPC services to ports). Port 2049 = NFS daemon. Exports defined in /etc/exports.",
+    vulns:["Insecure export with no_root_squash: remote root user keeps root privileges on mount","World-readable exports: any IP can mount the share","Old NFSv2/v3 lacks authentication — relies on IP-based trust"],
+    tools:["nmap --script nfs-ls,nfs-showmount","showmount -e <target>","mount (Linux)","Metasploit nfs_mount"],
+    commands:"showmount -e <target>\nnmap -p 111,2049 --script nfs-ls,nfs-showmount <target>\nmount -t nfs <target>:/ /mnt/share"
+  },
+  {
+    cat:"file", name:"LDAP", port:"389", type:"TCP",
+    desc:"Lightweight Directory Access Protocol — directory and identity services",
+    risk:"HIGH",
+    function:"Used to query and modify directory services (Active Directory, OpenLDAP). Hierarchical structure: DC (domain), OU (organizational unit), CN (common name). LDAPS (port 636) adds TLS. Bind = authenticate to the server.",
+    vulns:["Null Bind: anonymous query without credentials → enumerate users, groups, OUs","LDAP Injection: similar to SQLi — inject LDAP filter characters","Cleartext credentials if LDAPS not enforced","User/group enumeration from unauthenticated queries"],
+    tools:["ldapsearch","nmap --script ldap-rootdse","ldapdomaindump","Metasploit ldap_login","enum4linux","BloodHound (AD mapping)"],
+    commands:"ldapsearch -x -H ldap://<target> -b '' -s base\nldapsearch -x -H ldap://<target> -b 'dc=company,dc=com' '(objectClass=person)'\nldapdomaindump -u 'domain\\user' -p pass <target>"
+  },
+  {
+    cat:"file", name:"Kerberos", port:"88", type:"TCP",
+    desc:"Authentication protocol used by Active Directory",
+    risk:"CRITICAL",
+    function:"Ticket-based authentication. KDC (Key Distribution Center) issues TGT (Ticket Granting Ticket) after initial auth, then Service Tickets for specific services. Eliminates plaintext password transmission.",
+    vulns:["Kerberoasting: request service tickets for SPNs → crack offline (no auth needed beyond domain user)","AS-REP Roasting: users without pre-auth → get encrypted TGT → crack offline","Golden Ticket: forge TGT using krbtgt hash → permanent domain access","Silver Ticket: forge service ticket using service account hash","Pass-the-Ticket: steal and reuse valid tickets"],
+    tools:["Rubeus (Windows)","impacket GetUserSPNs.py (Kerberoasting)","hashcat (crack tickets)","mimikatz (ticket extraction)","BloodHound"],
+    commands:"GetUserSPNs.py domain/user:pass -dc-ip <dc> -request\nhashcat -m 13100 tickets.txt rockyou.txt\nrubeus kerberoast"
+  },
+  {
+    cat:"file", name:"SCP", port:"22", type:"TCP",
+    desc:"Secure Copy — file transfer over SSH",
+    risk:"LOW",
+    function:"Uses SSH protocol for encrypted file transfer. Syntax: scp file user@host:/path. Security depends entirely on SSH configuration and key management.",
+    vulns:["Security depends on SSH key strength","Old SCP implementations vulnerable to path traversal injection from server"],
+    tools:["scp","rsync over SSH","WinSCP"],
+    commands:"scp file.txt user@<target>:/home/user/\nscp -r /folder user@<target>:/destination/"
+  },
+
+  // ── WEB ──
+  {
+    cat:"web", name:"HTTP", port:"80", type:"TCP",
+    desc:"HyperText Transfer Protocol — backbone of web communication",
+    risk:"HIGH",
+    function:"Stateless request-response protocol. Methods: GET, POST, PUT, DELETE, HEAD, OPTIONS, PATCH. No encryption — all data including credentials transmitted in plaintext. HTTP/1.1, HTTP/2, HTTP/3 (QUIC).",
+    vulns:["SQL Injection: malicious SQL in request parameters","XSS (Cross-Site Scripting): inject JavaScript into pages","CSRF: trick user's browser into making unwanted requests","Path Traversal: ../../../etc/passwd in file parameters","CRLF Injection: inject HTTP headers via newlines","SSRF: server fetches attacker-controlled URLs","Clickjacking: embed site in iframe","Directory listing: reveals file structure"],
+    tools:["Burp Suite (intercept, scan)","OWASP ZAP","nikto","gobuster/ffuf (directory brute)","sqlmap","Wireshark"],
+    commands:"nikto -h http://<target>\ngobuster dir -u http://<target> -w /usr/share/wordlists/dirb/common.txt\ncurl -v http://<target>"
+  },
+  {
+    cat:"web", name:"HTTPS", port:"443", type:"TCP",
+    desc:"HTTP over TLS — encrypted web communication",
+    risk:"MEDIUM",
+    function:"HTTP wrapped in TLS/SSL. Handshake: ClientHello → ServerHello + Certificate → Key Exchange → Finished. Certificate validates server identity. TLS 1.3 is current standard.",
+    vulns:["Expired or self-signed certificates","Weak cipher suites (RC4, DES, 3DES, export ciphers)","Heartbleed (CVE-2014-0160): leak 64KB of server memory via TLS heartbeat","POODLE: force downgrade to SSL 3.0","BEAST, BREACH, CRIME: compression-based attacks","Certificate pinning bypass","Mixed content: HTTP resources loaded on HTTPS page"],
+    tools:["testssl.sh","sslyze","sslscan","nmap --script ssl-enum-ciphers","Burp Suite","openssl s_client"],
+    commands:"testssl.sh <target>\nsslyze --regular <target>:443\nopenssl s_client -connect <target>:443\nnmap -p 443 --script ssl-cert,ssl-enum-ciphers <target>"
+  },
+  {
+    cat:"web", name:"SOAP", port:"80, 443", type:"TCP",
+    desc:"XML-based web services protocol",
+    risk:"MEDIUM",
+    function:"Simple Object Access Protocol — uses XML for message format, typically over HTTP. WSDL file describes available operations. Predecessor to REST APIs.",
+    vulns:["XXE (XML External Entity): inject external entity in XML → read files or SSRF","SOAP Injection: inject additional XML elements","Parameter tampering in XML body","WS-Security misconfigurations"],
+    tools:["Burp Suite (intercept and modify SOAP)","wsdler (Burp extension)","SoapUI","Metasploit"],
+    commands:"# In Burp: send SOAP request to Repeater\n# Test XXE:\n<!DOCTYPE test [<!ENTITY xxe SYSTEM 'file:///etc/passwd'>]><test>&xxe;</test>"
+  },
+  {
+    cat:"web", name:"WebSocket", port:"80, 443", type:"TCP",
+    desc:"Full-duplex communication channel over a single TCP connection",
+    risk:"MEDIUM",
+    function:"Upgrades an HTTP connection to a persistent bidirectional channel. Used in real-time apps: chat, live feeds, collaborative tools. Uses ws:// or wss:// (TLS).",
+    vulns:["Cross-Site WebSocket Hijacking (CSWSH): CSRF-like attack on WebSocket connections","Missing authentication checks on WebSocket messages","Injection attacks via WebSocket messages","No same-origin policy enforcement by default"],
+    tools:["Burp Suite (WebSocket tab)","wscat","websocat"],
+    commands:"wscat -c ws://<target>/socket\n# In Burp: WebSockets history tab"
+  },
+
+  // ── EMAIL ──
+  {
+    cat:"email", name:"SMTP", port:"25", type:"TCP",
+    desc:"Simple Mail Transfer Protocol — sending email between servers",
+    risk:"HIGH",
+    function:"Port 25 = server-to-server. Port 587 = client submission (STARTTLS). Port 465 = SMTPS (TLS). Commands: HELO/EHLO, MAIL FROM, RCPT TO, DATA, QUIT. VRFY checks if user exists. EXPN expands mailing lists.",
+    vulns:["Open Relay: server forwards mail for any sender to any recipient → spam abuse","VRFY enumeration: check if email addresses exist","SMTP Injection: inject headers to send email as victim","Email spoofing if SPF/DKIM/DMARC not configured","Phishing relay via misconfigured server"],
+    tools:["nmap --script smtp-enum-users,smtp-open-relay","swaks (SMTP testing)","Metasploit smtp_enum","telnet (manual test)"],
+    commands:"nmap -p 25 --script smtp-open-relay,smtp-enum-users <target>\nswaks --to victim@company.com --from attacker@evil.com --server <target>\ntelnet <target> 25\nVRFY admin"
+  },
+  {
+    cat:"email", name:"POP3", port:"110", type:"TCP",
+    desc:"Post Office Protocol — retrieves email from server to client",
+    risk:"MEDIUM",
+    function:"Downloads email from server to local client then deletes from server. POP3S uses port 995 with TLS. Commands: USER, PASS, LIST, RETR, DELE, QUIT.",
+    vulns:["Port 110 transmits credentials in plaintext","Brute force on username/password","Harvest email content if MITM on unencrypted session"],
+    tools:["hydra -l user -P pass.txt pop3://<target>","nmap --script pop3-capabilities","Wireshark","telnet (manual)"],
+    commands:"nmap -p 110 --script pop3-capabilities <target>\nhydra -l admin -P rockyou.txt pop3://<target>"
+  },
+  {
+    cat:"email", name:"IMAP", port:"143", type:"TCP",
+    desc:"Internet Message Access Protocol — access email on server",
+    risk:"MEDIUM",
+    function:"Unlike POP3, keeps email on server and syncs across devices. IMAPS uses port 993 with TLS. Supports folders, flags, search. Commands: LOGIN, SELECT, FETCH, SEARCH, LOGOUT.",
+    vulns:["Port 143 transmits in plaintext — credentials and email content sniffable","Brute force attacks","IMAP injection via specially crafted commands"],
+    tools:["hydra -l user -P pass.txt imap://<target>","nmap --script imap-capabilities","Wireshark"],
+    commands:"nmap -p 143 --script imap-capabilities <target>\nhydra -l user -P rockyou.txt imap://<target>"
+  },
+  {
+    cat:"email", name:"SIP", port:"5060", type:"BOTH",
+    desc:"Session Initiation Protocol — VoIP call signaling",
+    risk:"HIGH",
+    function:"Sets up, modifies, and terminates VoIP sessions. Works with RTP for actual audio/video. Methods: INVITE, ACK, BYE, CANCEL, OPTIONS, REGISTER.",
+    vulns:["User enumeration via OPTIONS/REGISTER responses","VoIP toll fraud: make calls through victim's PBX","SIP flooding DoS","RTP stream interception to hear calls","Authentication bypass on REGISTER requests"],
+    tools:["svmap (SIPVicious)","svwar (extension enum)","Wireshark","sipvicious suite"],
+    commands:"svmap <target>\nsvwar -e100-300 <target>\nwireshark -f 'udp port 5060'"
+  },
+  {
+    cat:"email", name:"IRC", port:"194", type:"TCP",
+    desc:"Internet Relay Chat — real-time group messaging",
+    risk:"HIGH",
+    function:"Text-based chat protocol using channels. Historically used for legitimate chat. Now commonly used by botnets for Command & Control (C2) because it is simple, anonymous, and hard to block.",
+    vulns:["Botnet C2: bots join IRC channel and listen for commands from operator","DCC (Direct Client-to-Client) exploits for file transfer abuse","Information leakage: IP addresses exposed in some modes"],
+    tools:["Wireshark (identify C2 traffic)","irssi / weechat","nmap -p 194,6667"],
+    commands:"nmap -p 6667 --script irc-info <target>\nwireshark -f 'tcp port 6667'"
+  },
+
+  // ── DATABASE ──
+  {
+    cat:"database", name:"MySQL", port:"3306", type:"TCP",
+    desc:"Open-source relational database management system",
+    risk:"HIGH",
+    function:"Most popular open-source RDBMS. Used by web applications (LAMP/LEMP stack). Supports stored procedures, views, triggers. Default user: root. No password by default in some configs.",
+    vulns:["SQL Injection via web application → database dump","INTO OUTFILE / LOAD DATA INFILE: read/write server files","User Defined Functions (UDF): escalate to OS command execution","Default root with no password","Brute force on exposed port"],
+    tools:["sqlmap","nmap --script mysql-info,mysql-enum","Metasploit mysql_login","hydra -l root -P pass.txt mysql://<target>","mysql client"],
+    commands:"nmap -p 3306 --script mysql-info,mysql-empty-password <target>\nhydra -l root -P rockyou.txt mysql://<target>\nsqlmap -u 'http://target/page?id=1' --dbs"
+  },
+  {
+    cat:"database", name:"MSSQL", port:"1433", type:"TCP",
+    desc:"Microsoft SQL Server — enterprise relational database",
+    risk:"CRITICAL",
+    function:"Microsoft's enterprise RDBMS. Port 1433 = SQL queries. Port 1434 UDP = SQL Server Browser (instance discovery). Supports Windows Authentication and SQL Authentication.",
+    vulns:["xp_cmdshell: execute OS commands directly from SQL — disabled by default but often re-enabled","Linked servers: pivot to connected databases","Windows Authentication abuse → hash capture","Brute force on SQL auth","MSSQL UNC path injection → capture NTLMv2 hash"],
+    tools:["Metasploit mssql_login, mssql_exec","impacket mssqlclient.py","sqsh / sqlcmd","nmap --script ms-sql-*","PowerUpSQL"],
+    commands:"nmap -p 1433 --script ms-sql-info,ms-sql-empty-password <target>\npython3 mssqlclient.py domain/user:pass@<target>\nuse auxiliary/scanner/mssql/mssql_login"
+  },
+  {
+    cat:"database", name:"PostgreSQL", port:"5432", type:"TCP",
+    desc:"Advanced open-source object-relational database",
+    risk:"HIGH",
+    function:"Feature-rich RDBMS supporting JSON, full-text search, and extensions. Uses pg_hba.conf for client authentication. Default superuser: postgres.",
+    vulns:["Weak pg_hba.conf: trust authentication allows login without password","Default postgres account with no password","COPY TO/FROM for file read/write","Extension-based RCE (plpython, plperl)"],
+    tools:["nmap --script pgsql-brute","hydra -l postgres -P pass.txt postgres://<target>","Metasploit postgres_login","psql client"],
+    commands:"nmap -p 5432 --script pgsql-brute <target>\nhydra -l postgres -P rockyou.txt postgres://<target>\npsql -h <target> -U postgres"
+  },
+  {
+    cat:"database", name:"Oracle", port:"1521", type:"TCP",
+    desc:"Oracle Database — enterprise-grade relational database",
+    risk:"HIGH",
+    function:"Port 1521 = TNS Listener. Requires SID (System Identifier) or Service Name to connect. Large enterprise deployments. TNS = Transparent Network Substrate protocol.",
+    vulns:["SID enumeration: guess/brute-force the instance name","Default accounts: sys/change_on_install, system/manager, scott/tiger","TNS Poison: redirect client connections (older versions)","PL/SQL injection for privilege escalation"],
+    tools:["odat (Oracle Database Attacking Tool)","nmap --script oracle-sid-brute","Metasploit oracle_login","sqlplus (Oracle client)"],
+    commands:"nmap -p 1521 --script oracle-sid-brute <target>\nodat sidguesser -s <target>\nodat all -s <target> -d <SID> -U sys -P oracle"
+  },
+  {
+    cat:"database", name:"Redis", port:"6379", type:"TCP",
+    desc:"In-memory key-value store and cache database",
+    risk:"CRITICAL",
+    function:"Fast in-memory data store used for caching, sessions, pub/sub messaging. No authentication by default. Commands: GET, SET, DEL, KEYS, CONFIG. Often exposed publicly by misconfiguration.",
+    vulns:["No authentication by default — any client can connect and read/write all data","Write SSH keys to ~/.ssh/authorized_keys → SSH backdoor","Write cron jobs → RCE","CONFIG SET to change persistence file location — write web shell","Massive sensitive data exposure (session tokens, cached DB queries)"],
+    tools:["redis-cli","nmap --script redis-info","Metasploit redis_unauth_exec","shodan port:6379"],
+    commands:"redis-cli -h <target>\nredis-cli -h <target> KEYS '*'\nredis-cli -h <target> CONFIG GET dir"
+  },
+  {
+    cat:"database", name:"MongoDB", port:"27017", type:"TCP",
+    desc:"NoSQL document database — stores JSON-like documents",
+    risk:"CRITICAL",
+    function:"Schema-less document store. Collections = tables. Documents = rows (JSON format). No authentication by default in older versions. Widely used in web applications.",
+    vulns:["No authentication by default — full database access without credentials","NoSQL Injection: bypass queries with $ne, $gt, $where operators","Exposed to internet without firewall → massive data breaches (thousands of exposed DBs found by researchers)"],
+    tools:["mongo client","nmap --script mongodb-info","Metasploit mongodb_login","Robo3T / MongoDB Compass","shodan port:27017"],
+    commands:"nmap -p 27017 --script mongodb-info <target>\nmongo <target>:27017\n# in mongo shell: show dbs; use admin; db.getUsers()"
+  },
+
+  // ── VPN & SECURITY ──
+  {
+    cat:"security", name:"IPsec", port:"500", type:"UDP",
+    desc:"IP Security — suite of protocols for encrypted IP tunnels",
+    risk:"MEDIUM",
+    function:"Layer 3 VPN suite. Two modes: Tunnel (encrypts entire IP packet — site-to-site) and Transport (encrypts payload only — host-to-host). Protocols: AH (Authentication Header) and ESP (Encapsulating Security Payload). IKE on port 500 for key exchange.",
+    vulns:["IKEv1 Aggressive Mode: leaks PSK hash offline — crackable with hashcat","Weak DH groups (Group 1/2): breakable","Weak PSK (pre-shared keys): offline dictionary attack","IKEv1 Main Mode fingerprinting: identify vendor and version"],
+    tools:["ike-scan","ikeforce","Metasploit ike_aggressive_mode","hashcat -m 5300 (IKEv1 MD5)","Wireshark"],
+    commands:"ike-scan --aggressive --id=test <target>\nikeforce.py <target> -t 1\nhashcat -m 5300 ike_hashes.txt rockyou.txt"
+  },
+  {
+    cat:"security", name:"RADIUS", port:"1812, 1813", type:"UDP",
+    desc:"Remote Authentication Dial-In User Service — AAA protocol",
+    risk:"MEDIUM",
+    function:"Centralizes Authentication, Authorization, and Accounting for network access (WiFi, VPN, dial-up). Port 1812 = auth, 1813 = accounting. Uses shared secret between NAS and RADIUS server.",
+    vulns:["Weak shared secrets — offline dictionary attack against captured exchanges","RADIUS attributes manipulation","Message-Authenticator field bypass in older implementations"],
+    tools:["nmap --script radius-auth","Metasploit radius_login","freeradius (test server)"],
+    commands:"nmap -p 1812 --script radius-brute --script-args userdb=users.txt <target>"
+  },
+  {
+    cat:"security", name:"TACACS+", port:"49", type:"TCP",
+    desc:"Terminal Access Controller Access-Control System — AAA for network devices",
+    risk:"HIGH",
+    function:"Cisco proprietary protocol separating Authentication, Authorization, and Accounting into independent functions. Encrypts entire packet body (unlike RADIUS which only encrypts password). Used for admin access to routers and switches.",
+    vulns:["Compromise TACACS+ server → control access to all managed network devices","Weak shared secrets — same attack as RADIUS","Traffic analysis if encryption weak"],
+    tools:["Wireshark","Metasploit tacacs_login","nmap -p 49"],
+    commands:"nmap -p 49 <target>"
+  },
+  {
+    cat:"security", name:"PPTP", port:"1723", type:"TCP",
+    desc:"Point-to-Point Tunneling Protocol — legacy VPN protocol",
+    risk:"CRITICAL",
+    function:"Old Microsoft VPN protocol. Uses GRE for data encapsulation. MS-CHAPv2 for authentication. Broken — should not be used in any modern environment.",
+    vulns:["MS-CHAPv2 is cryptographically broken — challenge/response crackable in hours","No forward secrecy","Session hijacking possible","chapcrack tool can crack captured MS-CHAPv2 handshakes"],
+    tools:["chapcrack","asleap","Wireshark (capture GRE)"],
+    commands:"# Capture with Wireshark, filter: ppp\n# Use chapcrack on captured MS-CHAPv2"
+  },
+  {
+    cat:"security", name:"OpenVPN", port:"1194", type:"BOTH",
+    desc:"Open-source VPN using SSL/TLS",
+    risk:"LOW",
+    function:"Uses OpenSSL library for encryption. Highly configurable. Can run on UDP (default) or TCP. Certificates or username/password authentication. Widely considered secure when properly configured.",
+    vulns:["Weak certificate validation","Username/password brute force if enabled","Outdated OpenSSL versions with known CVEs"],
+    tools:["openvpn client","nmap -p 1194","hydra (if auth enabled)"],
+    commands:"nmap -p 1194 -sU <target>"
+  },
+  {
+    cat:"security", name:"SNMP", port:"161, 162", type:"UDP",
+    desc:"Simple Network Management Protocol — monitor and manage network devices",
+    risk:"CRITICAL",
+    function:"Port 161 = queries (GET, SET, GETNEXT). Port 162 = traps (device sends alerts to manager). Versions: v1/v2c use community strings (plaintext password). v3 adds authentication and encryption. Can read entire device config and modify settings.",
+    vulns:["Community string 'public' and 'private' often unchanged → read full device config","Write access with 'private' → modify device config, routing, disable interfaces","SNMPv1/v2 transmits in plaintext — community string sniffable","SNMP amplification DDoS: small request, large response","Full network topology map from one device via MIB walk"],
+    tools:["snmpwalk","snmpcheck","onesixtyone (community brute)","Metasploit snmp_enum","nmap --script snmp-*","snmp-check"],
+    commands:"onesixtyone -c community.txt <target>\nsnmpwalk -v2c -c public <target>\nnmap -sU -p 161 --script snmp-brute,snmp-sysdescr <target>\nsnmpcheck -t <target> -c public"
+  },
+  {
+    cat:"security", name:"NTP", port:"123", type:"UDP",
+    desc:"Network Time Protocol — synchronize clocks across network",
+    risk:"MEDIUM",
+    function:"Synchronizes system clocks to UTC reference. Critical for Kerberos (5-minute tolerance), logs correlation, and certificate validity. Uses hierarchical stratum system (stratum 0 = atomic clock, stratum 1 = directly synced, etc.).",
+    vulns:["NTP Amplification DDoS: monlist command returns list of last 600 clients — huge amplification factor","NTP spoofing: feed false time to break Kerberos authentication","Kerberos ticket invalidation if time skew exceeds 5 minutes"],
+    tools:["nmap --script ntp-info,ntp-monlist","ntpdate","Metasploit ntp_dos"],
+    commands:"nmap -sU -p 123 --script ntp-monlist <target>\nntpdate -q <target>"
+  },
+
+  // ── WIRELESS & L2 ──
+  {
+    cat:"wireless", name:"WPA2", port:"—", type:"OTHER",
+    desc:"Wi-Fi Protected Access 2 — current standard WiFi security",
+    risk:"MEDIUM",
+    function:"Uses AES-CCMP for encryption. Two modes: Personal (PSK — pre-shared key) and Enterprise (802.1X with RADIUS). 4-Way Handshake establishes session keys. PMKID attack works without capturing full handshake.",
+    vulns:["4-Way Handshake capture → offline dictionary attack against PSK","PMKID attack: get PMKID from single frame → crack PSK offline","KRACK: key reinstallation attack against WPA2 implementations","Deauth attack to force handshake capture"],
+    tools:["aircrack-ng suite","hashcat -m 22000 (WPA2)","hcxdumptool (PMKID)","hcxtools","wireshark"],
+    commands:"airmon-ng start wlan0\nairodump-ng wlan0mon --bssid <AP_MAC> -c <channel> -w capture\naireplay-ng --deauth 10 -a <AP_MAC> wlan0mon\naircrack-ng capture.cap -w rockyou.txt"
+  },
+  {
+    cat:"wireless", name:"WEP", port:"—", type:"OTHER",
+    desc:"Wired Equivalent Privacy — broken WiFi security (legacy)",
+    risk:"CRITICAL",
+    function:"First WiFi security standard. Uses RC4 stream cipher with 24-bit IV — fundamentally broken. IV is reused frequently on busy networks. Crackable by capturing enough IVs (as few as 5000-10000 packets).",
+    vulns:["Broken by design — crackable in minutes on busy networks","IV reuse allows statistical key recovery","No defense — upgrade to WPA2/WPA3 immediately"],
+    tools:["aircrack-ng","aireplay-ng (inject traffic to generate IVs)","airodump-ng"],
+    commands:"airodump-ng -w wep_capture wlan0mon\naireplay-ng -3 -b <AP_MAC> wlan0mon\naircrack-ng wep_capture.cap"
+  },
+  {
+    cat:"wireless", name:"802.1X", port:"—", type:"L2",
+    desc:"Port-based Network Access Control — authenticate before network access",
+    risk:"MEDIUM",
+    function:"IEEE standard for port-based NAC. Three roles: Supplicant (client), Authenticator (switch/AP), Authentication Server (RADIUS). Supplicant must authenticate before switch opens the port. Used in enterprise wired and wireless.",
+    vulns:["LEAP (Cisco's old EAP) vulnerable to dictionary attacks via ASLEAP","EAP-MD5 vulnerable — no mutual authentication, can be cracked","Rogue access point: serve fake 802.1X to capture credentials","PEAP misconfiguration: client doesn't verify server certificate → credential theft"],
+    tools:["asleap (LEAP cracking)","hostapd-wpe (rogue AP)","freeradius-wpe","Wireshark"],
+    commands:"asleap -r capture.cap\nhostapd-wpe hostapd-wpe.conf"
+  },
+  {
+    cat:"wireless", name:"VLAN", port:"—", type:"L2",
+    desc:"Virtual LAN — logical network segmentation at Layer 2",
+    risk:"HIGH",
+    function:"Separates broadcast domains on shared infrastructure. Tagged (trunk) ports carry multiple VLANs. Access ports belong to one VLAN. 802.1Q adds 4-byte VLAN tag to Ethernet frame.",
+    vulns:["VLAN Hopping - Switch Spoofing: configure attacker port as trunk → receive all VLAN traffic","VLAN Hopping - Double Tagging: craft frame with two 802.1Q tags → first tag stripped by first switch, inner tag routes to different VLAN","Only works one-way (attacker → target VLAN)"],
+    tools:["yersinia (VLAN hopping)","scapy (craft double-tagged frames)","Wireshark"],
+    commands:"yersinia 8021q -attack 1\n# Or with scapy:\n# craft Dot1Q/Dot1Q double-tagged packet"
+  },
+  {
+    cat:"wireless", name:"STP", port:"—", type:"L2",
+    desc:"Spanning Tree Protocol — prevents Layer 2 loops",
+    risk:"HIGH",
+    function:"Elects a Root Bridge and blocks redundant links to prevent loops. BPDUs (Bridge Protocol Data Units) exchanged between switches. If attacker becomes Root Bridge, all traffic flows through them.",
+    vulns:["Root Bridge attack: send superior BPDUs → become Root Bridge → intercept all traffic","TCN (Topology Change Notification) flood: force MAC table flush → switches flood all traffic","STP DoS: continuously change topology"],
+    tools:["yersinia (STP attacks)","scapy (craft BPDUs)","Wireshark"],
+    commands:"yersinia stp -attack 1 (become root bridge)\nyersinia stp -attack 2 (DoS with TCN flood)"
+  },
+  {
+    cat:"wireless", name:"CDP", port:"—", type:"L2",
+    desc:"Cisco Discovery Protocol — Cisco device information sharing",
+    risk:"HIGH",
+    function:"Proprietary Cisco Layer 2 protocol. Devices broadcast CDP advertisements containing: hostname, hardware platform, IOS version, IP address, capabilities, and interface info. Runs every 60 seconds.",
+    vulns:["Passive reconnaissance: full hardware and software inventory from one captured frame","IOS version → look up known CVEs immediately","CDP flood DoS: exhaust switch memory with fake CDP neighbors","Should be disabled on all user-facing ports"],
+    tools:["Wireshark (filter: cdp)","yersinia (CDP flood)","nmap (after getting IPs)"],
+    commands:"wireshark -f 'ether[20:2] == 0x2000'\nyersinia cdp -attack 1"
+  },
+  {
+    cat:"wireless", name:"SCADA/ICS", port:"Various", type:"OTHER",
+    desc:"Industrial Control Systems / Supervisory Control and Data Acquisition",
+    risk:"CRITICAL",
+    function:"Control physical industrial processes: power grids, water treatment, manufacturing, oil pipelines. Protocols: Modbus (502), DNP3 (20000), OPC (135), Profibus, HART. PLCs (Programmable Logic Controllers) execute the actual control.",
+    vulns:["Often no authentication — designed for isolated networks now internet-connected","No encryption on most ICS protocols","Attacks can cause physical damage (Stuxnet destroyed uranium centrifuges)","Shodan exposes thousands of internet-facing SCADA systems","Legacy systems impossible to patch without production shutdown"],
+    tools:["plcscan","nmap ICS scripts","Shodan (port:502 Modbus)","ISF (Industrial Exploitation Framework)","s7scan (Siemens S7)"],
+    commands:"nmap -p 502 --script modbus-discover <target>\nplcscan <target>"
+  },
+  {
+    cat:"wireless", name:"HSRP/VRRP", port:"—", type:"L2",
+    desc:"Hot Standby/Virtual Router Redundancy Protocol — gateway redundancy",
+    risk:"HIGH",
+    function:"HSRP (Cisco) / VRRP (standard) create a virtual router shared between physical routers. One router is Active (handles traffic), others are Standby. Client uses virtual IP as default gateway.",
+    vulns:["Become the Active router: send superior HSRP Hello with higher priority → intercept all traffic as default gateway","No authentication by default in HSRPv1/VRRPv1","MD5 authentication in HSRPv2 can be cracked"],
+    tools:["yersinia (HSRP attack)","scapy (craft HSRP Hello)","Wireshark"],
+    commands:"yersinia hsrp -attack 1\nwireshark -f 'udp port 1985'  # HSRP"
+  },
+
+  // ── MONITORING ──
+  {
+    cat:"monitoring", name:"Syslog", port:"514", type:"UDP",
+    desc:"System logging protocol — send logs from devices to central server",
+    risk:"MEDIUM",
+    function:"Devices (routers, servers, firewalls) send log messages to a central syslog server. UDP 514 (no guarantee of delivery). RFC 5424 = structured syslog. Severity levels 0-7 (Emergency to Debug).",
+    vulns:["UDP = no encryption, no authentication — fake log injection to mislead analysts","Log flooding: overwhelm server to hide real attack in noise","Log deletion via compromise of syslog server","Intercept sensitive info logged in cleartext (credentials, PII)"],
+    tools:["Wireshark (udp port 514)","scapy (inject fake logs)","ncat / socat","rsyslog / syslog-ng"],
+    commands:"wireshark -f 'udp port 514'\n# Send fake log:\necho '<14>Apr 30 10:00:00 attacker sshd: Accepted password for root' | nc -u <syslog-server> 514"
+  },
+  {
+    cat:"monitoring", name:"RPC", port:"135", type:"TCP",
+    desc:"Remote Procedure Call — allows programs to execute code on remote systems",
+    risk:"HIGH",
+    function:"Microsoft RPC endpoint mapper on port 135 — maps RPC services to dynamic high ports. Client contacts 135 first to find where the target service is listening. Used by WMI, DCOM, Active Directory replication.",
+    vulns:["MS03-026: famous RPC DCOM buffer overflow (blaster worm)","Enumerate all running RPC services → find exploitable endpoints","DCOM exploitation → lateral movement","Often left open on internal Windows networks"],
+    tools:["nmap --script msrpc-enum","rpcdump.py (impacket)","Metasploit ms03_026_dcom"],
+    commands:"nmap -p 135 --script msrpc-enum <target>\nrpcdump.py <target>"
+  },
+  {
+    cat:"monitoring", name:"WMI", port:"135, 5985", type:"TCP",
+    desc:"Windows Management Instrumentation — Windows system management",
+    risk:"HIGH",
+    function:"Provides unified interface for Windows system management: query hardware, software, processes, services, registry. Used by admins for remote management. Also heavily used by attackers for lateral movement — fileless and living-off-the-land.",
+    vulns:["Lateral movement without dropping files (wmiexec)","WMI persistence via event subscriptions (survive reboots)","Credential reuse attacks","WMI queries used for reconnaissance"],
+    tools:["impacket wmiexec.py","crackmapexec wmi","PowerShell Invoke-WmiMethod","Metasploit web_delivery"],
+    commands:"wmiexec.py domain/admin:pass@<target>\ncrackmapexec wmi <target> -u admin -p pass -x 'whoami'"
+  },
+  {
+    cat:"monitoring", name:"UPnP", port:"1900", type:"UDP",
+    desc:"Universal Plug and Play — automatic device discovery and configuration",
+    risk:"HIGH",
+    function:"Allows devices to automatically discover each other and configure services. Uses SSDP for discovery on multicast 239.255.255.250:1900. Allows devices to request router port forwarding via NAT-PMP/UPnP.",
+    vulns:["Router port forwarding abuse: any LAN device can open external firewall ports — bypass perimeter security","Exposed UPnP on internet: Shodan finds millions — direct SOAP exploitation","CallStranger: SSRF via UPnP SUBSCRIBE callback (CVE-2020-12695)","Obsolete implementations with buffer overflows"],
+    tools:["miranda (UPnP client/explorer)","nmap --script upnp-info","upnp-inspector","Metasploit upnp_ssdp_msearch"],
+    commands:"nmap -p 1900 --script upnp-info -sU <target>\nmiranda"
+  },
+  {
+    cat:"monitoring", name:"LDAPS", port:"636", type:"TCP",
+    desc:"LDAP over SSL/TLS — secure directory queries",
+    risk:"LOW",
+    function:"Encrypted version of LDAP. Replaces plaintext LDAP 389 for all directory queries. Requires valid SSL certificate on the server. Same functionality as LDAP with transport security.",
+    vulns:["Certificate validation bypass: accept any certificate → still vulnerable to MITM","Brute force attacks still possible over encrypted channel"],
+    tools:["ldapsearch -H ldaps://","nmap --script ldap-rootdse -p 636"],
+    commands:"ldapsearch -x -H ldaps://<target> -b 'dc=company,dc=com'"
+  },
+  {
+    cat:"monitoring", name:"NetBIOS", port:"137-139", type:"BOTH",
+    desc:"Network Basic Input/Output System — legacy Windows naming and sessions",
+    risk:"HIGH",
+    function:"Pre-DNS Windows name resolution. Port 137 UDP = name service. Port 138 UDP = datagram. Port 139 TCP = session service. SMB used to run over NetBIOS (139) before moving to direct TCP (445).",
+    vulns:["NBNS Poisoning: respond to NetBIOS name queries with attacker IP → capture NTLMv2 hashes (Responder)","Enumerate domain: users, groups, shares via NetBIOS name queries","NetBIOS names leak computer, user, and domain names"],
+    tools:["Responder","nmap --script nbstat","enum4linux","nbtscan"],
+    commands:"nbtscan <network>/24\nnmap -p 137-139 --script nbstat <target>\n# On local network:\nresponder -I eth0 -rdwv"
+  }
+];
+
+// ── RENDER ──
+const categories = {
+  connectivity: { label:"Core Connectivity & Troubleshooting", icon:"🏗️" },
+  remote:       { label:"Remote Access & Management", icon:"🖥️" },
+  file:         { label:"File Sharing & Directory Services", icon:"📂" },
+  web:          { label:"Web Services & Development", icon:"🌐" },
+  email:        { label:"Email & Communication", icon:"📧" },
+  database:     { label:"Databases", icon:"🗄️" },
+  security:     { label:"VPN, Security & Encryption", icon:"🛡️" },
+  wireless:     { label:"Wireless, L2 & Industrial", icon:"📡" },
+  monitoring:   { label:"Monitoring, Management & Misc", icon:"🛠️" }
+};
+
+let currentCat = "all";
+let currentSearch = "";
+let activeRisks = new Set(["CRITICAL","HIGH","MEDIUM","LOW"]);
+
+function typeClass(t) {
+  if(t==="TCP") return "type-tcp";
+  if(t==="UDP") return "type-udp";
+  if(t==="BOTH") return "type-both";
+  if(t==="L2") return "type-l2";
+  return "type-other";
+}
+
+function hl(text, q) {
+  if(!q) return text;
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return text.replace(re, '<mark>$1</mark>');
+}
+
+function matches(p, q) {
+  if(!q) return true;
+  const s = q.toLowerCase();
+  return [p.name, p.port, p.desc, p.function, p.risk,
+    p.vulns.join(' '), p.tools.join(' '), p.commands]
+    .join(' ').toLowerCase().includes(s);
+}
+
+function render() {
+  const q = currentSearch.trim();
+  const container = document.getElementById('tableContainer');
+  const order = Object.keys(categories);
+  let html = '';
+  let visible = 0;
+  let totalCrit = 0;
+
+  for(const cat of order) {
+    if(currentCat !== 'all' && currentCat !== cat) continue;
+    const rows = protocols.filter(p =>
+      p.cat === cat &&
+      activeRisks.has(p.risk) &&
+      matches(p, q)
+    );
+    if(!rows.length) continue;
+    visible += rows.length;
+    const info = categories[cat];
+    html += `<div class="section" data-cat="${cat}">
+      <div class="section-header">
+        <div class="section-icon">${info.icon}</div>
+        <div class="section-title">${info.label}</div>
+        <div class="section-count">${rows.length} protocols</div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Protocol</th>
+              <th>Port</th>
+              <th>Type</th>
+              <th>Risk</th>
+              <th>Description</th>
+              <th>Tools</th>
+            </tr>
+          </thead>
+          <tbody>`;
+
+    for(const p of rows) {
+      if(p.risk==="CRITICAL") totalCrit++;
+      const id = `${p.cat}_${p.name}`.replace(/[^a-z0-9_]/gi,'_');
+      html += `
+            <tr onclick="toggleDetail('${id}')" id="row_${id}">
+              <td><span class="expand-arrow" id="arr_${id}">▶</span></td>
+              <td><span class="proto-name">${hl(p.name,q)}</span></td>
+              <td><span class="port-badge">${hl(p.port,q)}</span></td>
+              <td><span class="type-badge ${typeClass(p.type)}">${p.type}</span></td>
+              <td><span class="risk risk-${p.risk}">${p.risk}</span></td>
+              <td><span class="desc-text">${hl(p.desc,q)}</span></td>
+              <td><div class="tools-list">${p.tools.slice(0,3).map(t=>`<span class="tool-tag">${hl(t,q)}</span>`).join('')}</div></td>
+            </tr>
+            <tr class="detail-row" id="detail_${id}">
+              <td class="detail-cell" colspan="7">
+                <div class="detail-inner">
+                  <div class="detail-block">
+                    <h4>Function</h4>
+                    <p>${hl(p.function,q)}</p>
+                  </div>
+                  <div class="detail-block">
+                    <h4>Vulnerabilities & Attack Vectors</h4>
+                    ${p.vulns.map(v=>`<div class="vuln-item"><div class="vuln-dot"></div><span>${hl(v,q)}</span></div>`).join('')}
+                  </div>
+                  <div class="detail-block">
+                    <h4>All Detection & Exploitation Tools</h4>
+                    <div class="tools-list" style="margin-bottom:8px">${p.tools.map(t=>`<span class="tool-tag">${hl(t,q)}</span>`).join('')}</div>
+                    <h4 style="margin-top:12px">Common Commands</h4>
+                    <div class="cmd-block">${hl(p.commands,q).replace(/\n/g,'<br>')}</div>
+                  </div>
+                </div>
+              </td>
+            </tr>`;
+    }
+    html += `</tbody></table></div></div>`;
+  }
+
+  container.innerHTML = html;
+  document.getElementById('visibleCount').textContent = visible;
+  document.getElementById('totalCountBar').textContent = protocols.length;
+  document.getElementById('totalCount').textContent = protocols.length;
+  document.querySelector('.stats .stat-num:nth-child(1)');
+  // update crit count
+  const critEl = document.querySelector('.stats .stat:nth-child(2) .stat-num');
+  if(critEl) critEl.textContent = protocols.filter(p=>p.risk==="CRITICAL").length;
+
+  const nr = document.getElementById('noResults');
+  nr.classList.toggle('visible', visible === 0);
+}
+
+function toggleDetail(id) {
+  const row = document.getElementById('row_'+id);
+  const detail = document.getElementById('detail_'+id);
+  const arr = document.getElementById('arr_'+id);
+  const open = detail.classList.contains('visible');
+  // close all
+  document.querySelectorAll('.detail-row.visible').forEach(r=>r.classList.remove('visible'));
+  document.querySelectorAll('tbody tr.expanded').forEach(r=>r.classList.remove('expanded'));
+  document.querySelectorAll('.expand-arrow').forEach(a=>{ a.style.transform=''; a.style.color=''; });
+  if(!open) {
+    detail.classList.add('visible');
+    row.classList.add('expanded');
+  }
+}
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCat = btn.dataset.cat;
+    render();
+  });
+});
+
+// Risk buttons
+document.querySelectorAll('.risk-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const r = btn.dataset.risk;
+    if(activeRisks.has(r)) {
+      if(activeRisks.size > 1) { activeRisks.delete(r); btn.classList.remove('active'); }
+    } else {
+      activeRisks.add(r); btn.classList.add('active');
+    }
+    render();
+  });
+});
+
+// Search
+document.getElementById('searchInput').addEventListener('input', e => {
+  currentSearch = e.target.value;
+  render();
+});
+
+// Init
+render();
+</script>
+</body>
+</html>
