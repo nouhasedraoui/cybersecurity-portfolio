@@ -619,20 +619,5 @@ WHERE profileID='1' or '1'='1'-- -' AND password='hash'
 | GUID not found | Look in page source, user reviews, API responses, email links |
 | WAF blocking SQL payload | Use Hackvertor `<@hex_entities>` to encode everything, not just keywords |
 
----
-
-## What to Learn Next — Recommended Order
-
-| Course | Why | Priority |
-|--------|-----|----------|
-| Authentication Vulnerabilities | Highest real-world value, 55 topics, builds on what you know | **Do first** |
-| API Testing | Modern attack surface, every app has APIs | Do second |
-| NoSQL Injection | Natural extension of SQL injection knowledge | Do third |
-| CORS | Important for browser security model | After basics |
-| CSRF | Needs JavaScript knowledge first | After JS |
-| Race Conditions | Advanced — do after core topics | Advanced |
-| Prototype Pollution | Needs deep JavaScript knowledge | Advanced |
-
----
 
 *Server-Side Vulnerabilities Pentest Field Notes — update as knowledge grows*
