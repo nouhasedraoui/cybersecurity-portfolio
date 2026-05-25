@@ -5,7 +5,7 @@
 **Difficulty:** Easy  
 **Flags:** 2  
 **Completed:** May 2026  
-**Score:** 16,193 (BOTSv1 session) — *(W1seGuy itself: both flags captured, key found manually via CyberChef)*
+
 
 ---
 
