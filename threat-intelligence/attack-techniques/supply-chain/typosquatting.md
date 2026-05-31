@@ -9,7 +9,7 @@
 1. [What is it, actually](#what-is-it-actually)
 2. [Why it works so well](#why-it-works-so-well)
 3. [The three ways attackers do it](#the-three-ways-attackers-do-it)
-4. [Real incidents — what actually happened](#real-incidents--what-actually-happened)
+4. [Real incidents , what actually happened](#real-incidents--what-actually-happened)
 5. [What registries do about it](#what-registries-do-about-it)
 6. [How to hunt for it](#how-to-hunt-for-it)
 7. [How to stop it](#how-to-stop-it)
